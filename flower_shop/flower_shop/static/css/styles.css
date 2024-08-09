@@ -4,33 +4,27 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    height: 100%; /* Высота карточки 100% от родителя */
-    max-height: 450px; /* Максимальная высота карточки */
-    transition: transform 0.2s ease-in-out;
+    height: 100%;
+    max-height: 450px;
+    transition: transform 0.3s ease-in-out; /* Плавное увеличение */
+}
+
+.card:hover {
+    transform: scale(1.05); /* Увеличение карточки при наведении */
 }
 
 .card-img-top {
-    height: 200px; /* Высота изображения */
-    object-fit: cover; /* Сохранение пропорций изображения */
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease-in-out; /* Плавное увеличение изображения */
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.1); /* Увеличение изображения при наведении */
 }
 
 .card-body {
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Распределение содержимого карточки */
-}
-
-.card-title {
-    margin-bottom: 10px; /* Отступ снизу */
-    font-size: 1.25rem; /* Размер шрифта для заголовка */
-}
-
-.card-text {
-    font-size: 1rem; /* Размер шрифта для текста */
-    margin-bottom: 15px; /* Отступ снизу */
-}
-
-.btn {
-    align-self: center;
-    margin-top: auto; /* Отодвигаем кнопку к низу карточки */
+    justify-content: space-between;
 }

@@ -42,11 +42,10 @@ def add_to_cart(request, product_id):
 
 @login_required
 def view_cart(request):
-    # Просмотр корзины
-    cart = get_object_or_404(Cart, user=request.user)
+    # Если корзина не существует, она будет создана
+    cart, created = Cart.objects.get_or_create(user=request.user)
     cart_items = CartItem.objects.filter(cart=cart)
     return render(request, 'shop/cart.html', {'cart_items': cart_items, 'total_price': cart.total_price})
-
 
 @login_required
 def remove_from_cart(request, cart_item_id):
