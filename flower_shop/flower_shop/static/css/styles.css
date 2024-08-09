@@ -1,0 +1,36 @@
+.card {
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Высота карточки 100% от родителя */
+    max-height: 450px; /* Максимальная высота карточки */
+    transition: transform 0.2s ease-in-out;
+}
+
+.card-img-top {
+    height: 200px; /* Высота изображения */
+    object-fit: cover; /* Сохранение пропорций изображения */
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Распределение содержимого карточки */
+}
+
+.card-title {
+    margin-bottom: 10px; /* Отступ снизу */
+    font-size: 1.25rem; /* Размер шрифта для заголовка */
+}
+
+.card-text {
+    font-size: 1rem; /* Размер шрифта для текста */
+    margin-bottom: 15px; /* Отступ снизу */
+}
+
+.btn {
+    align-self: center;
+    margin-top: auto; /* Отодвигаем кнопку к низу карточки */
+}
