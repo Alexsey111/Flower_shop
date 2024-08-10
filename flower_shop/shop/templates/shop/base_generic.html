@@ -12,7 +12,7 @@
 <body>
   <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="{% url 'index' %}">Мой сайт</a>
+      <a class="navbar-brand" href="{% url 'index' %}">Магазин цветов</a>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Домой</a></li>
@@ -20,7 +20,7 @@
             <li class="nav-item"><a class="nav-link" href="{% url 'view_cart' %}">Корзина</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'account_logout' %}">Выйти</a></li>
           {% else %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'account_login' %}">Логин</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'account_login' %}">Вход</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'account_signup' %}">Регистрация</a></li>
           {% endif %}
         </ul>
@@ -33,7 +33,7 @@
   </main>
   <footer class="bg-light py-3 mt-4">
     <div class="container text-center">
-      <p>&copy; 2024 Мой сайт</p>
+      <p>&copy; 2024 Магазин цветов</p>
     </div>
   </footer>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
