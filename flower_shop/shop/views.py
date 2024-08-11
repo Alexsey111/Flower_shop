@@ -1,9 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
+from .models import Product, Cart, CartItem, Category, Order, OrderItem  # Импортируйте OrderItem
 from .forms import ProductFilterForm
-from .models import Product, Cart, CartItem, Category, Order, OrderItem  # Добавьте OrderItem
-
 
 def index(request):
     # Отображение продуктов на главной странице с пагинацией
@@ -12,9 +11,6 @@ def index(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'shop/index.html', {'page_obj': page_obj})
-
-# shop/views.py
-from .forms import ProductFilterForm
 
 def product_list(request):
     product_list = Product.objects.all().order_by('id')
@@ -39,8 +35,6 @@ def product_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'shop/product_list.html', {'page_obj': page_obj, 'form': form})
-
-
 
 @login_required
 def add_to_cart(request, product_id):
@@ -100,8 +94,6 @@ def checkout(request):
         return redirect('order_detail', order_id=order.id)
 
     return render(request, 'shop/checkout.html', {'cart': cart})
-
-
 
 @login_required
 def order_detail(request, order_id):
