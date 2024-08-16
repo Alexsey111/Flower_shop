@@ -1,22 +1,23 @@
-{% extends "shop/base_generic.html" %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оформление заказа</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Оформление заказа</h1>
 
-{% block title %}Оформление заказа{% endblock %}
+        <form method="post" action="{% url 'checkout' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
 
-{% block content %}
-<h1>Оформление заказа</h1>
-<form method="post">
-    {% csrf_token %}
-    <div class="mb-3">
-        <h4>Товары в корзине:</h4>
-        <ul>
-            {% for item in cart.items.all %}
-                <li>{{ item.product.name }} - {{ item.quantity }} x {{ item.product.price }} руб.</li>
-            {% empty %}
-                <li>Ваша корзина пуста.</li>
-            {% endfor %}
-        </ul>
-        <p><strong>Итоговая стоимость: {{ cart.total_price }} руб.</strong></p>
+            <button type="submit" class="btn btn-primary">Подтвердить заказ</button>
+        </form>
     </div>
-    <button type="submit" class="btn btn-primary">Оформить заказ</button>
-</form>
-{% endblock %}
+</body>
+</html>

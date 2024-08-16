@@ -1,6 +1,6 @@
 from django import forms
 from allauth.account.forms import SignupForm
-from .models import Category
+from .models import Category, DeliveryMethod, PaymentMethod, Order, Profile
 
 class CustomSignupForm(SignupForm):
     name = forms.CharField(max_length=30, label='Name')
@@ -10,9 +10,14 @@ class CustomSignupForm(SignupForm):
     def save(self, request):
         user = super(CustomSignupForm, self).save(request)
         user.first_name = self.cleaned_data.get('name')
-        user.profile.phone = self.cleaned_data.get('phone')
-        user.profile.address = self.cleaned_data.get('address')
         user.save()
+
+        # Создаем или обновляем профиль
+        profile, created = Profile.objects.get_or_create(user=user)
+        profile.phone = self.cleaned_data.get('phone')
+        profile.address = self.cleaned_data.get('address')
+        profile.save()
+
         return user
 
 
@@ -38,3 +43,40 @@ class ProductFilterForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={'placeholder': 'Поиск по названию'})
     )
+
+
+class CheckoutForm(forms.ModelForm):
+    delivery_option = forms.ChoiceField(
+        choices=Order.DELIVERY_CHOICES,
+        required=True,
+        label="Выберите способ доставки"
+    )
+    payment_option = forms.ChoiceField(
+        choices=Order.PAYMENT_CHOICES,
+        required=True,
+        label="Выберите способ оплаты"
+    )
+
+    class Meta:
+        model = Order
+        fields = ['delivery_option', 'payment_option']
+
+
+class OrderPreviewForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['delivery_option', 'payment_option']
+
+
+
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['delivery_option', 'payment_option']
+        widgets = {
+            'delivery_option': forms.Select(choices=Order.DELIVERY_CHOICES),
+            'payment_option': forms.Select(choices=Order.PAYMENT_CHOICES),
+        }
+
+class ConfirmLogoutForm(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput, label='Ваш пароль')

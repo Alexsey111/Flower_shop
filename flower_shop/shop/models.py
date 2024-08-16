@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.conf import settings
-
+from django.utils import timezone
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -44,8 +44,21 @@ class CartItem(models.Model):
     def __str__(self):
         return f"{self.quantity} of {self.product.name} in cart of {self.cart.user.username}"
 
+class DeliveryMethod(models.Model):
+    name = models.CharField(max_length=100)
+    cost = models.DecimalField(max_digits=10, decimal_places=2)
 
-# shop/models.py
+    def __str__(self):
+        return self.name
+
+class PaymentMethod(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+
 class Order(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -53,10 +66,24 @@ class Order(models.Model):
         ('cancelled', 'Cancelled'),
     ]
 
+    DELIVERY_CHOICES = [
+        ('standard', 'Стандартная доставка'),
+        ('express', 'Экспресс-доставка'),
+        ('pickup', 'Самовывоз'),
+    ]
+
+    PAYMENT_CHOICES = [
+        ('credit_card', 'Кредитная карта'),
+        ('paypal', 'PayPal'),
+        ('cash_on_delivery', 'Оплата при доставке'),
+    ]
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    delivery_option = models.CharField(max_length=20, choices=DELIVERY_CHOICES, default='standard')
+    payment_option = models.CharField(max_length=20, choices=PAYMENT_CHOICES, default='credit_card')
 
     def update_total_price(self):
         self.total_price = sum(item.product.price * item.quantity for item in self.orderitem_set.all())
@@ -64,7 +91,6 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order {self.id} by {self.user}"
-
 
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -80,13 +106,18 @@ class Review(models.Model):
     def __str__(self):
         return f"Review by {self.user.username} for {self.product.name}"
 
+
+
 class Report(models.Model):
     date = models.DateField()
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    sales_data = models.JSONField()
+    order = models.ForeignKey('Order', on_delete=models.CASCADE)
+    profit = models.DecimalField(max_digits=10, decimal_places=2)
+    expenses = models.DecimalField(max_digits=10, decimal_places=2)
+    sales_data = models.JSONField(blank=True, null=True)
 
     def __str__(self):
         return f"Report for {self.date}"
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -95,15 +126,16 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
-
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
-
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
+    try:
+        instance.profile.save()
+    except Profile.DoesNotExist:
+        Profile.objects.create(user=instance)
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='orderitem_set', on_delete=models.CASCADE)

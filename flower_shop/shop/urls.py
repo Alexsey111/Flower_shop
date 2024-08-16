@@ -1,5 +1,17 @@
-from django.urls import path, include
-from .views import index, product_list, add_to_cart, view_cart, remove_from_cart, checkout, order_detail
+from django.urls import path
+from django.contrib.auth.views import LogoutView
+from .views import (
+    index,
+    product_list,
+    add_to_cart,
+    view_cart,
+    remove_from_cart,
+    checkout,
+    order_preview,
+    confirm_order,
+    order_detail,
+    confirm_logout,
+)
 
 urlpatterns = [
     path('', index, name='index'),
@@ -8,6 +20,11 @@ urlpatterns = [
     path('cart/', view_cart, name='view_cart'),
     path('remove_from_cart/<int:cart_item_id>/', remove_from_cart, name='remove_from_cart'),
     path('checkout/', checkout, name='checkout'),
-    path('order/<int:order_id>/', order_detail, name='order_detail'),  # Убедитесь, что этот маршрут соответствует функции
-    path('password_reset/', include('django.contrib.auth.urls')),
+    path('order/preview/<int:order_id>/', order_preview, name='order_preview'),
+    path('order/confirm/<int:order_id>/', confirm_order, name='confirm_order'),
+    path('order/<int:order_id>/', order_detail, name='order_detail'),
+    path('accounts/logout/', LogoutView.as_view(template_name='account/logout.html'), name='logout'),
+    path('accounts/logout/confirm/', LogoutView.as_view(template_name='account/confirm_logout.html'),
+         name='logout_confirmed'),
 ]
+

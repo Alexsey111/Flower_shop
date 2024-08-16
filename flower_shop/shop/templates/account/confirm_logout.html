@@ -1,0 +1,8 @@
+{% extends 'shop/base_generic.html' %}
+
+{% block content %}
+<div class="container">
+    <p>Вы успешно вышли из системы. <a href="{% url 'index' %}" class="btn btn-secondary">Вернуться на главную</a></p>
+    <a href="{% url 'view_cart' %}" class="btn btn-secondary">Корзина</a>
+</div>
+{% endblock %}

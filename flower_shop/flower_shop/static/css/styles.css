@@ -1,3 +1,4 @@
+/* Стили для карточек (уже присутствующие) */
 .card {
     border: 1px solid #ddd;
     border-radius: 0.5rem;
@@ -6,21 +7,21 @@
     flex-direction: column;
     height: 100%;
     max-height: 450px;
-    transition: transform 0.3s ease-in-out; /* Плавное увеличение */
+    transition: transform 0.3s ease-in-out;
 }
 
 .card:hover {
-    transform: scale(1.05); /* Увеличение карточки при наведении */
+    transform: scale(1.05);
 }
 
 .card-img-top {
     height: 200px;
     object-fit: cover;
-    transition: transform 0.3s ease-in-out; /* Плавное увеличение изображения */
+    transition: transform 0.3s ease-in-out;
 }
 
 .card:hover .card-img-top {
-    transform: scale(1.1); /* Увеличение изображения при наведении */
+    transform: scale(1.1);
 }
 
 .card-body {
@@ -29,7 +30,7 @@
     justify-content: space-between;
 }
 
-/* shop/static/css/styles.css */
+/* Стили для кнопок (уже присутствующие) */
 .btn {
     display: inline-block;
     padding: 10px 20px;
@@ -47,4 +48,51 @@
 
 .btn-primary:hover {
     background-color: #0056b3;
+}
+
+/* Новые стили для формы оформления заказа */
+form {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.mb-3 {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: bold;
+}
+
+select, input[type="text"], input[type="email"], input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    color: #333;
+}
+
+button[type="submit"] {
+    width: 100%;
+    background-color: #28a745;
+    color: white;
+    padding: 10px;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #218838;
 }
