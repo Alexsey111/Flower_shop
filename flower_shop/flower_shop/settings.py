@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'django_extensions',
+    'crispy_forms',
 ]
 
 SITE_ID = 1
@@ -171,3 +172,5 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
+
+CRISPY_TEMPLATE_PACK = 'bootstrap5'

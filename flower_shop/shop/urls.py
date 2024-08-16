@@ -11,6 +11,8 @@ from .views import (
     confirm_order,
     order_detail,
     confirm_logout,
+    product_detail,
+    add_review
 )
 
 urlpatterns = [
@@ -24,7 +26,9 @@ urlpatterns = [
     path('order/confirm/<int:order_id>/', confirm_order, name='confirm_order'),
     path('order/<int:order_id>/', order_detail, name='order_detail'),
     path('accounts/logout/', LogoutView.as_view(template_name='account/logout.html'), name='logout'),
-    path('accounts/logout/confirm/', LogoutView.as_view(template_name='account/confirm_logout.html'),
-         name='logout_confirmed'),
+    path('accounts/logout/confirm/', LogoutView.as_view(template_name='account/confirm_logout.html'), name='logout_confirmed'),
+    path('product/<int:product_id>/', product_detail, name='product_detail'),
+    path('product/<int:product_id>/add_review/', add_review, name='add_review'),
+
 ]
 

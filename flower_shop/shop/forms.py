@@ -1,6 +1,6 @@
 from django import forms
 from allauth.account.forms import SignupForm
-from .models import Category, DeliveryMethod, PaymentMethod, Order, Profile
+from .models import Category, DeliveryMethod, PaymentMethod, Order, Profile, Review
 
 class CustomSignupForm(SignupForm):
     name = forms.CharField(max_length=30, label='Name')
@@ -80,3 +80,17 @@ class OrderForm(forms.ModelForm):
 
 class ConfirmLogoutForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput, label='Ваш пароль')
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['review', 'rating']
+        widgets = {
+            'review': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Напишите ваш отзыв...'}),
+            'rating': forms.NumberInput(attrs={'min': 1, 'max': 5}),
+        }
+        labels = {
+            'review': 'Отзыв',
+            'rating': 'Оценка',
+        }

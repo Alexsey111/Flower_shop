@@ -25,6 +25,33 @@
               <button type="submit" class="btn btn-success">Добавить в корзину</button>
             </form>
           </div>
+
+          <!-- Форма для добавления отзыва -->
+          <div class="card-footer">
+            <h6>Оставьте отзыв:</h6>
+            <form method="post" action="{% url 'add_review' product.id %}">
+              {% csrf_token %}
+              {{ review_form.as_p }}
+              <input type="hidden" name="product" value="{{ product.id }}">
+              <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+            </form>
+          </div>
+
+          <!-- Список отзывов -->
+          <div class="card-footer">
+            <h6>Отзывы:</h6>
+            {% if product.reviews.all %}
+              {% for review in product.reviews.all %}
+                <div class="mb-2">
+                  <p><strong>{{ review.user.username }}</strong> (Рейтинг: {{ review.rating }}/5)</p>
+                  <p>{{ review.review }}</p>
+                  <p>Дата: {{ review.created_at }}</p>
+                </div>
+              {% endfor %}
+            {% else %}
+              <p>Отзывов пока нет.</p>
+            {% endif %}
+          </div>
         </div>
       </div>
     {% endfor %}

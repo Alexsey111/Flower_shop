@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from .models import Product, Cart, CartItem, Category, Order, OrderItem, DeliveryMethod, PaymentMethod
 from .forms import ProductFilterForm, CheckoutForm, OrderPreviewForm, OrderForm
@@ -9,15 +9,29 @@ from django.dispatch import receiver
 from .models import Report
 from django.contrib.auth import logout
 from .utils import calculate_profit, calculate_expenses
+from .models import Product, Review
+from .forms import ReviewForm
 
 
 def index(request):
-    # Отображение продуктов на главной странице с пагинацией
-    product_list = Product.objects.all().order_by('id')
-    paginator = Paginator(product_list, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    return render(request, 'shop/index.html', {'page_obj': page_obj})
+    products = Product.objects.all()
+    page = request.GET.get('page', 1)
+    paginator = Paginator(products, 9)
+
+    try:
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+
+    # Добавляем форму для отзывов
+    form = ReviewForm()
+
+    return render(request, 'shop/index.html', {
+        'page_obj': page_obj,
+        'form': form,
+    })
 
 def product_list(request):
     product_list = Product.objects.all().order_by('id')
@@ -33,15 +47,30 @@ def product_list(request):
         if form.cleaned_data['search_query']:
             product_list = product_list.filter(name__icontains=form.cleaned_data['search_query'])
 
-    # Отладочная информация
-    print("Форма:", form)
-    print("Данные формы:", form.cleaned_data)
-    print("Количество товаров:", product_list.count())
-
     paginator = Paginator(product_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'shop/product_list.html', {'page_obj': page_obj, 'form': form})
+
+    # Отображаем форму для добавления отзыва
+    review_form = ReviewForm()
+
+    return render(request, 'shop/product_list.html', {
+        'page_obj': page_obj,
+        'form': form,
+        'review_form': review_form,
+    })
+
+def add_review(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user
+            review.product = product
+            review.save()
+            return redirect('index')
+    return redirect('product_detail', product_id=product.id)
 
 @login_required
 def add_to_cart(request, product_id):
@@ -183,9 +212,6 @@ def confirm_logout(request):
 
     return render(request, 'shop/confirm_logout.html', {'form': form})
 
-# shop/views.py
-
-from .models import Report
 
 def create_report(order_id):
     order = get_object_or_404(Order, id=order_id)
@@ -201,3 +227,43 @@ def create_report(order_id):
         sales_data=sales_data,
     )
     report.save()
+
+@login_required
+def add_review(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user
+            review.product = product
+            review.save()
+            return redirect('product_detail', product_id=product.id)
+    else:
+        form = ReviewForm()
+
+    return render(request, 'shop/add_review.html', {'form': form, 'product': product})
+
+
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    reviews = Review.objects.filter(product=product)
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user  # Убедитесь, что пользователь аутентифицирован
+            review.save()
+            return redirect('product_detail', product_id=product.id)
+    else:
+        form = ReviewForm()
+
+    return render(request, 'shop/product_detail.html', {
+        'product': product,
+        'reviews': reviews,
+        'form': form,
+    })
+
+

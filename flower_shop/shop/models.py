@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.conf import settings
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -17,7 +18,7 @@ class Product(models.Model):
     name = models.CharField(max_length=200)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='products/')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='products')
 
     def __str__(self):
         return self.name
@@ -58,7 +59,6 @@ class PaymentMethod(models.Model):
         return self.name
 
 
-
 class Order(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -92,20 +92,22 @@ class Order(models.Model):
     def __str__(self):
         return f"Order {self.id} by {self.user}"
 
+
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
     review = models.TextField()
-    rating = models.PositiveIntegerField()  # Замените IntegerField на PositiveIntegerField
+    rating = models.PositiveIntegerField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def clean(self):
-        from django.core.exceptions import ValidationError
         if self.rating < 1 or self.rating > 5:
             raise ValidationError('Rating must be between 1 and 5.')
 
     def __str__(self):
         return f"Review by {self.user.username} for {self.product.name}"
-
 
 
 class Report(models.Model):
