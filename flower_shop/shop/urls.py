@@ -12,7 +12,8 @@ from .views import (
     order_detail,
     confirm_logout,
     product_detail,
-    add_review
+    add_review,
+    orders_report
 )
 
 urlpatterns = [
@@ -29,6 +30,6 @@ urlpatterns = [
     path('accounts/logout/confirm/', LogoutView.as_view(template_name='account/confirm_logout.html'), name='logout_confirmed'),
     path('product/<int:product_id>/', product_detail, name='product_detail'),
     path('product/<int:product_id>/add_review/', add_review, name='add_review'),
-
+    path('orders_report/', orders_report, name='orders_report'),
 ]
 

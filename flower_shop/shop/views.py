@@ -11,6 +11,7 @@ from django.contrib.auth import logout
 from .utils import calculate_profit, calculate_expenses
 from .models import Product, Review
 from .forms import ReviewForm
+from django.db.models import Count, Sum, Avg
 
 
 def index(request):
@@ -266,4 +267,26 @@ def product_detail(request, product_id):
         'form': form,
     })
 
+def orders_report(request):
+    total_orders = Order.objects.count()
+    completed_orders = Order.objects.filter(status='completed').count()
+    cancelled_orders = Order.objects.filter(status='cancelled').count()
+
+    total_revenue = Order.objects.filter(status='completed').aggregate(Sum('total_price'))
+    average_order_value = Order.objects.filter(status='completed').aggregate(Avg('total_price'))
+
+    delivery_stats = Order.objects.values('delivery_option').annotate(count=Count('delivery_option'))
+    payment_stats = Order.objects.values('payment_option').annotate(count=Count('payment_option'))
+
+    context = {
+        'total_orders': total_orders,
+        'completed_orders': completed_orders,
+        'cancelled_orders': cancelled_orders,
+        'total_revenue': total_revenue['total_price__sum'],
+        'average_order_value': average_order_value['total_price__avg'],
+        'delivery_stats': delivery_stats,
+        'payment_stats': payment_stats,
+    }
+
+    return render(request, 'shop/orders_report.html', context)
 
