@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'django_extensions',
     'crispy_forms',
+    'telegram_bot',
 ]
 
 SITE_ID = 1
@@ -57,6 +58,7 @@ ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+TELEGRAM_API_TOKEN = '7369326068:AAGIKuTlGEoKO7i48YzgFNLyPKdc946pbSI'
 
 # Настройки электронной почты для allauth (если нужно)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
