@@ -1,17 +1,11 @@
-from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.contrib.auth.decorators import login_required
-from .models import Product, Cart, CartItem, Category, Order, OrderItem, DeliveryMethod, PaymentMethod
-from .forms import ProductFilterForm, CheckoutForm, OrderPreviewForm, OrderForm
-from .forms import ConfirmLogoutForm
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from .models import Report
-from django.contrib.auth import logout
+from .models import Product, Cart, CartItem, Category, Order, OrderItem, DeliveryMethod, PaymentMethod, Report, Review
+from .forms import ProductFilterForm, CheckoutForm, OrderPreviewForm, OrderForm, ConfirmLogoutForm, ReviewForm
 from .utils import calculate_profit, calculate_expenses
-from .models import Product, Review
-from .forms import ReviewForm
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Sum, Avg
+from django.contrib.auth import logout
 
 
 def index(request):
@@ -61,17 +55,17 @@ def product_list(request):
         'review_form': review_form,
     })
 
-def add_review(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    if request.method == 'POST':
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            review = form.save(commit=False)
-            review.user = request.user
-            review.product = product
-            review.save()
-            return redirect('index')
-    return redirect('product_detail', product_id=product.id)
+# def add_review(request, product_id):
+#     product = get_object_or_404(Product, id=product_id)
+#     if request.method == 'POST':
+#         form = ReviewForm(request.POST)
+#         if form.is_valid():
+#             review = form.save(commit=False)
+#             review.user = request.user
+#             review.product = product
+#             review.save()
+#             return redirect('index')
+#     return redirect('product_detail', product_id=product.id)
 
 @login_required
 def add_to_cart(request, product_id):

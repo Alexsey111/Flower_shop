@@ -72,11 +72,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
-    'flower_shop.middleware.ClearCacheMiddleware',
-    'flower_shop.middleware.LoginRequiredMiddleware',
+    'config.middleware.ClearCacheMiddleware',
+    'config.middleware.LoginRequiredMiddleware',
 ]
 
-ROOT_URLCONF = 'flower_shop.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
@@ -94,7 +94,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'flower_shop.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
@@ -145,7 +145,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "flower_shop" / "static",
+    BASE_DIR / "config" / "static",
 ]
 
 

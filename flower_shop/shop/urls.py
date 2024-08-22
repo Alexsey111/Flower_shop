@@ -1,5 +1,6 @@
 from django.urls import path
 from django.contrib.auth.views import LogoutView
+from django.urls import path, include
 from .views import (
     index,
     product_list,
@@ -16,6 +17,7 @@ from .views import (
     orders_report
 )
 
+
 urlpatterns = [
     path('', index, name='index'),
     path('products/', product_list, name='product_list'),
@@ -31,5 +33,6 @@ urlpatterns = [
     path('product/<int:product_id>/', product_detail, name='product_detail'),
     path('product/<int:product_id>/add_review/', add_review, name='add_review'),
     path('orders_report/', orders_report, name='orders_report'),
+    path('telegram_bot/', include('telegram_bot.urls')),
 ]
 
